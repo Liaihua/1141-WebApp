@@ -22,9 +22,12 @@ namespace _1141_WebApp.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserView>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _context.Users.ToListAsync();
+            foreach (var user in users)
+                user.IdDepartmentNavigation = await _context.Departments.FirstOrDefaultAsync(d => d.Id == user.IdDepartment);
+            return users.Select(s => (UserView)s).ToList();
         }
 
         // GET: api/Users/5
@@ -77,9 +80,9 @@ namespace _1141_WebApp.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Users>> PostUsers(Users users)
+        public async Task<ActionResult<UserView>> PostUsers(UserView users)
         {
-            _context.Users.Add(users);
+            _context.Users.Add(new Users { Sname = users.Sname, Fname = users.Fname, IdDepartment = users.IdDepartmentNavigation?.Id ?? 0});
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUsers", new { id = users.Id }, users);

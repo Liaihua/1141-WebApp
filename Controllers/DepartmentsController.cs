@@ -22,9 +22,15 @@ namespace _1141_WebApp.Controllers
 
         // GET: api/Departments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Departments>>> GetDepartments()
+        public async Task<ActionResult<IEnumerable<DepartmentView>>> GetDepartments()
         {
-            return await _context.Departments.ToListAsync();
+            // По какой то причине выходной список не отображает пользователей
+            var departments = await _context.Departments.ToListAsync();
+            foreach (var department in departments)
+            {
+                department.Users = await _context.Users.Where(u => department.Id == u.IdDepartmentNavigation.Id).ToListAsync();
+            }
+            return departments.Select(d => (DepartmentView)d).ToList();
         }
 
         // GET: api/Departments/5
@@ -77,9 +83,10 @@ namespace _1141_WebApp.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Departments>> PostDepartments(Departments departments)
+        public async Task<ActionResult<DepartmentView>> PostDepartments(DepartmentView departments)
         {
-            _context.Departments.Add(departments);
+            // Наиболее предпочтительным является создание отдела БЕЗ польователей, чтобы была возможность добавить новых
+            _context.Departments.Add(new Departments { Id = departments.Id, Name = departments.Name });
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetDepartments", new { id = departments.Id }, departments);
