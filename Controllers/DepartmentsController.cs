@@ -44,6 +44,8 @@ namespace _1141_WebApp.Controllers
                 return NotFound();
             }
 
+            departments.Users = await _context.Users.Where(u => departments.Id == u.IdDepartmentNavigation.Id).ToListAsync();
+
             return departments;
         }
 
@@ -51,7 +53,7 @@ namespace _1141_WebApp.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartments(int id, Departments departments)
+        public async Task<IActionResult> PutDepartments(int id, DepartmentView departments)
         {
             if (id != departments.Id)
             {

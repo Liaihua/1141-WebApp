@@ -13,6 +13,6 @@ namespace _1141_WebApp.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<Users> Users { get; set; }
+        public ICollection<Users> Users { get; set; }
     }
 }

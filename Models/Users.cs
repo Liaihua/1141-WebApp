@@ -10,6 +10,6 @@ namespace _1141_WebApp.Models
         public string Sname { get; set; }
         public int IdDepartment { get; set; }
 
-        public virtual Departments IdDepartmentNavigation { get; set; }
+        public Departments IdDepartmentNavigation { get; set; }
     }
 }
